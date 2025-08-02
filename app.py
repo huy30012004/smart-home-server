@@ -42,9 +42,13 @@ class TemperatureSensor(db.Model):
         }
 
 # 5) Tạo bảng lần đầu (chỉ chạy 1 lần)
-@app.before_first_request
-def create_tables():
-    db.create_all()
+@app.before_request
+def ensure_tables():
+    # chỉ tạo lần đầu, nên bạn có thể thêm cờ hoặc try/except
+    try:
+        TemperatureSensor.__table__.create(db.engine)
+    except Exception:
+        pass
 
 # 6) Routes ví dụ:
 @app.route('/api/temperatures', methods=['GET'])
